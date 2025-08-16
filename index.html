@@ -1,94 +1,103 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>1000 Canales Daddy</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-body{font-family:Arial;margin:0;background:#f4f4f4;display:flex;flex-direction:column;min-height:100vh}
-.header{background:#333;color:#fff;padding:10px 20px;text-align:center}
-.container{display:flex;flex:1;margin:20px;gap:20px}
-.video-container{flex:2;padding:20px;background:#fff;border-radius:8px;box-shadow:0 0 10px rgba(0,0,0,.1);position:relative}
-.channels-container{flex:1;padding:20px;background:#fff;border-radius:8px;box-shadow:0 0 10px rgba(0,0,0,.1);overflow-y:auto;max-height:calc(100vh - 100px)}
-.button{display:block;margin:8px 0;padding:10px;background:#007BFF;color:#fff;border-radius:5px;text-align:center;text-decoration:none}
-.button:hover{background:#0056b3}
-.channel-name{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);color:#fff;padding:5px 10px;border-radius:4px;display:none}
-.search-container input{width:100%;padding:8px;font-size:16px}
-.channel-controls{margin-top:10px;display:flex;gap:10px}
-@media(max-width:768px){.container{flex-direction:column}}
-</style>
+  <meta charset="UTF-8">
+  <title>XUPER-CHANNELS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body{font-family:Arial;margin:0;background:#f4f4f4;display:flex;flex-direction:column;min-height:100vh}
+    .header{background:#333;color:#fff;padding:10px 20px;text-align:center}
+    .container{display:flex;flex:1;margin:20px;gap:20px}
+    .video-container,.channels-container{background:#fff;padding:20px;border-radius:8px;box-shadow:0 0 10px rgba(0,0,0,.1)}
+    .channels-container{flex:1;overflow-y:auto;max-height:calc(100vh - 100px)}
+    .button{display:block;margin:8px 0;padding:10px;background:#007BFF;color:#fff;border-radius:5px;text-align:center;text-decoration:none}
+    .button:hover{background:#0056b3}
+    .channel-name{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);color:#fff;padding:5px 10px;border-radius:4px;display:none}
+    .search-container input{width:100%;padding:8px;font-size:16px}
+    .channel-controls{margin-top:10px;display:flex;gap:10px}
+    @media(max-width:768px){.container{flex-direction:column}}
+  </style>
 </head>
 <body>
-<div class="header"><h1>XUPER-CHANNELS</h1></div>
-
-<div class="container">
-  <div class="video-container">
-    <div class="search-container"><input id="channelSearch" placeholder="Buscar canal..."></div>
-    <h2>XUPERLIST REPRODUCTOR</h2>
-    <video id="videoPlayer" width="100%" height="auto" controls preload="auto">
-      <source id="videoSource" src="proxy.php?url=https://thedaddy.top/cast/stream-1.php" type="application/x-mpegURL">
-      Tu navegador no soporta vídeo HLS.
-    </video>
-    <div class="channel-controls">
-      <button onclick="prevChannel()">Canal Anterior</button>
-      <button onclick="nextChannel()">Canal Siguiente</button>
-    </div>
-    <div id="channelNameDisplay" class="channel-name"></div>
+  <div class="header">
+    <h1>XUPER-CHANNELS</h1>
   </div>
 
-  <div class="channels-container">
-    <h2>👇👇CANALES👇👇</h2>
-    <div id="channelsList"></div>
-    <div id="loadMore" style="text-align:center">
-      <button onclick="loadMoreChannels()">Cargar +Canales</button>
+  <div class="container">
+    <div class="video-container">
+      <div class="search-container">
+        <input type="text" id="channelSearch" placeholder="Buscar canal...">
+      </div>
+      <h2>XUPERLIST REPRODUCTOR</h2>
+      <video id="videoPlayer" width="100%" height="auto" controls preload="auto">
+        <source id="videoSource" src="https://thedaddy.top/cast/stream-1.php" type="application/x-mpegURL">
+        Tu navegador no soporta vídeo HLS.
+      </video>
+      <div class="channel-controls">
+        <button onclick="prevChannel()">Canal Anterior</button>
+        <button onclick="nextChannel()">Canal Siguiente</button>
+      </div>
+      <div id="channelNameDisplay" class="channel-name"></div>
+    </div>
+
+    <div class="channels-container">
+      <h2>👇👇CANALES👇👇</h2>
+      <div id="channelsList"></div>
+      <div id="loadMore" style="text-align:center">
+        <button onclick="loadMoreChannels()">Cargar +Canales</button>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-const channelNames = Array.from({length:1000},(_,i)=>`Canal ${i+1}`);
-let currentChannel = 1;
-const perPage = 50;
+  <script>
+    const channelNames = Array.from({length:1000},(_,i)=>`Canal ${i+1}`);
+    let currentChannel = 1;
+    const perPage = 50;
 
-function loadChannels(start,end){
-  const list=document.getElementById('channelsList');
-  list.innerHTML='';
-  for(let i=start;i<=end;i++){
-    const btn=document.createElement('a');
-    btn.href='#';
-    btn.className='button';
-    btn.textContent=channelNames[i-1];
-    btn.onclick=()=>loadVideo(i);
-    list.appendChild(btn);
-  }
-}
-function loadMoreChannels(){
-  const start=currentChannel;
-  const end=Math.min(start+perPage-1,1000);
-  if(start>1000)return;
-  loadChannels(start,end);
-  currentChannel=end+1;
-  if(currentChannel>1000)document.getElementById('loadMore').style.display='none';
-}
-function loadVideo(num){
-  const url=`proxy.php?url=https://thedaddy.top/cast/stream-${num}.php`;
-  const v=document.getElementById('videoPlayer');
-  const s=document.getElementById('videoSource');
-  s.src=url;
-  v.load();
-  v.play();
-  const d=document.getElementById('channelNameDisplay');
-  d.textContent=channelNames[num-1];
-  d.style.display='block';
-  setTimeout(()=>d.style.display='none',10000);
-}
-function nextChannel(){if(currentChannel<1000)loadVideo(currentChannel++);}
-function prevChannel(){if(currentChannel>1)loadVideo(--currentChannel);}
-document.getElementById('channelSearch').addEventListener('input',e=>{
-  const t=e.target.value.toLowerCase();
-  document.querySelectorAll('.button').forEach(b=>b.style.display=b.textContent.toLowerCase().includes(t)?'':'none');
-});
-loadMoreChannels();
-</script>
+    function loadChannels(start,end){
+      const list=document.getElementById('channelsList');
+      list.innerHTML='';
+      for(let i=start;i<=end;i++){
+        const btn=document.createElement('a');
+        btn.href='#';
+        btn.className='button';
+        btn.textContent=channelNames[i-1];
+        btn.onclick=()=>loadVideo(i);
+        list.appendChild(btn);
+      }
+    }
+
+    function loadMoreChannels(){
+      const start=currentChannel;
+      const end=Math.min(start+perPage-1,1000);
+      if(start>1000)return;
+      loadChannels(start,end);
+      currentChannel=end+1;
+      if(currentChannel>1000)document.getElementById('loadMore').style.display='none';
+    }
+
+    function loadVideo(num){
+      const url=`https://thedaddy.top/cast/stream-${num}.php`;
+      const v=document.getElementById('videoPlayer');
+      const s=document.getElementById('videoSource');
+      s.src=url;
+      v.load();
+      v.play();
+      const d=document.getElementById('channelNameDisplay');
+      d.textContent=channelNames[num-1];
+      d.style.display='block';
+      setTimeout(()=>d.style.display='none',10000);
+    }
+
+    function nextChannel(){if(currentChannel<1000)loadVideo(++currentChannel);}
+    function prevChannel(){if(currentChannel>1)loadVideo(--currentChannel);}
+
+    document.getElementById('channelSearch').addEventListener('input',e=>{
+      const t=e.target.value.toLowerCase();
+      document.querySelectorAll('.button').forEach(b=>b.style.display=b.textContent.toLowerCase().includes(t)?'':'none');
+    });
+
+    loadMoreChannels();
+  </script>
 </body>
 </html>
