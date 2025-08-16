@@ -7,8 +7,8 @@ $ch = curl_init($url);
 curl_setopt_array($ch, [
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_HTTPHEADER => [
-        'Origin: https://lefttoplay.xyz',
-        'Referer: https://lefttoplay.xyz/',
+        'Origin: https://jxoxkplay.xyz',
+        'Referer: https://jxoxkplay.xyz/',
         'User-Agent: Mozilla/5.0 (iPad; CPU OS 13_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'
     ],
     CURLOPT_FOLLOWLOCATION => true,
